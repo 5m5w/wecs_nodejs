@@ -13,7 +13,7 @@ async function initDB() {
 
         db=client.db("test1");
         collection=db.collection("member");
-        
+
         // await collection.insertOne({
         //     name: "123",
         //     email:"123@123.com",
@@ -45,15 +45,19 @@ app.use(session({
 
 // 建立首頁路由
 app.get("/", function(req, res){
-    res.render("login.ejs");
+    res.render("mainpage1_wecs.ejs");
 });
 // 啟動伺服器 http://localhost:3000/
 app.listen(3000, function(){
     console.log("server started!");
 });
 
-// 在這裡處理註冊邏輯，例如保存使用者資料
-app.post('/register', (req, res) => {
-    console.log("User is registering...");
-    res.redirect('/register-page');  // 重定向到註冊成功的頁面
+// 註冊頁面路由
+app.get('/register', (req, res) => {
+    res.send('<h2>這是註冊頁面</h2>');
+});
+
+// 登入頁面路由
+app.get('/login', (req, res) => {
+    res.send('<h2>這是登入頁面</h2>');
 });
