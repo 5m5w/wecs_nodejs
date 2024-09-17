@@ -1,5 +1,6 @@
 const mongo=require("mongodb");
-const uri="mongodb+srv://jacob:jacob123@jacoblearning.ubzs3.mongodb.net/?retryWrites=true&w=majority&appName=JacobLearning";
+require('dotenv').config(); // 引用 .env 檔案中的資料
+const uri = process.env.MONGODB_URI; // 從環境變數中讀取 MONGODB_URI
 const client=new mongo.MongoClient(uri);
 const session=require("express-session");
 let db=null;
