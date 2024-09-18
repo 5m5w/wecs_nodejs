@@ -53,11 +53,20 @@ app.listen(3000, function(){
 });
 
 // 註冊頁面路由
-app.get('/register', (req, res) => {
-    res.render("register");
+app.get('/signup', async function (req, res) {
+    const name=req.body.name;
+    const email=req.body.email;
+    // 尚缺圖片程式碼
+    const dob=req.body.dob;
+    const gender=req.body.gender;
+    const yoe=req.body.yoe;
+    const location=req.body.location;
+    const certi=req.body.certi;
+    const languages=req.body.languages;
+    res.render("signup.ejs");
 });
 
 // 登入頁面路由
-app.get('/login', (req, res) => {
+app.get('/signin', (req, res) => {
     res.send('<h2>這是登入頁面</h2>');
 });

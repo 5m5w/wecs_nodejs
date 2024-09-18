@@ -55,6 +55,7 @@
         input[type="text"],
         input[type="email"],
         input[type="date"],
+        input[type="password"],
         input[type="tel"],
         input[type="number"],
         input[type="file"] {
@@ -117,8 +118,13 @@
             <form action="/submit" method="POST">
                 <label for="password">密碼:</label>
                 <input type="password" id="password" name="password" required minlength="8" placeholder="輸入密碼">
-                <button type="submit">提交</button>
             </form>
+            <!-- 確認密碼 -->
+            <div class="section">
+                <label for="confirmPassword">確認密碼:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8" placeholder="再次輸入密碼">
+                <div id="passwordError" class="error" style="display:none;">密碼不一致，請再試一次。</div>
+            </div>
 
             <!-- 照片上傳 -->
             <div class="section">
@@ -288,7 +294,23 @@
                 };
                 reader.readAsDataURL(photo);
             }
+        });   
+
+        const signupForm = document.getElementById('signupForm');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordError = document.getElementById('passwordError');
+
+        signupForm.addEventListener('submit', function(e) {
+            // 檢查兩次密碼是否一致
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault(); // 阻止表單提交
+                passwordError.style.display = 'block'; // 顯示錯誤訊息
+            } else {
+                passwordError.style.display = 'none'; // 隱藏錯誤訊息
+            }
         });
     </script>
+
 </body>
 </html>
