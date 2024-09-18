@@ -3,265 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>個人資料</title>
+    <title>會員註冊</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-            * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
+        /* Styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    body {
-        background-color: #fff7f0;
-        color: #333;
-        padding: 20px;
-    }
+        body {
+            background-color: #fff7f0;
+            color: #333;
+            padding: 20px;
+        }
 
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #ffe0cc;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffe0cc;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #ff7f50;
-    }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff7f50;
+        }
 
-    form {
-        display: flex;
-        flex-direction: column;
-    }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .section {
-        margin-bottom: 15px;
-        margin-top:15px;
-    }
+        .section {
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
 
-    label {
-        display: block;
-        margin-bottom: 5px;
-        color: #ff7f50;
-        margin-right: 10px;
-    }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ff7f50;
+            margin-right: 10px;
+        }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    input[type="tel"],
-    input[type="number"],
-    input[type="file"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-bottom: 10px;
-    }
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
 
-    .photo-preview {
-        margin-top: 10px;
-        text-align: center;
-    }
+        .photo-preview {
+            margin-top: 10px;
+            text-align: center;
+        }
 
-    .photo-preview img {
-        max-width: 100px;
-        max-height: 100px;
-        border-radius: 50%;
-    }
+        .photo-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 50%;
+        }
 
-    input[type="checkbox"],
-    input[type="radio"] {
-        margin-right: 10px;
-    }
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 10px;
+        }
 
-    button {
-        background-color: #ff7f50;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+        button {
+            background-color: #ff7f50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-    button:hover {
-        background-color: #ff6347;
-    }
+        button:hover {
+            background-color: #ff6347;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>個人資料</h1>
-        
-<form action="/submit" method="POST" enctype="multipart/form-data">
-    <div class="section">
-        <label for="name">姓名:</label>
-        <div>
-            <% for(let i = 0; i < data.length; i++) { %>
-                <div><%= data[i].name %></div> <!-- 顯示姓名 -->
-            <% } %>
-        </div>
-    </div>
+        <h1>會員註冊</h1>
 
-    <div class="section">
-        <label for="email">信箱:</label>
-        <div>
-            <% for(let i = 0; i < data.length; i++) { %>
-                <div><%= data[i].email %></div> <!-- 顯示信箱 -->
-            <% } %>
-        </div>
-    </div>
-</form>
+        <form action="/submit" method="POST" enctype="multipart/form-data">
+            <!-- 姓名 -->
+            <div class="section">
+                <label for="name">姓名:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
 
-<dv class="section">
-    <% if (profilePic) { %>
-      <img src="<%= profilePic %>" alt="會員照片" width="300" height="300">
-       <% } else { %>
-            <p>您還沒有上傳照片</p>
-        <% } %>
-        <label for="photo">上傳照片:</label>
-        <input type="file" id="photo" name="photo" accept="image/*">
-        <div class="photo-preview">
-            <img id="photo-display" src="#" alt="你的照片" style="display: none;">
-        </div>
-    </dv>
+            <!-- 信箱 -->
+            <div class="section">
+                <label for="email">信箱:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
 
+            <!-- 照片上傳 -->
+            <div class="section">
+                <label for="photo">上傳照片:</label>
+                <input type="file" id="photo" name="photo" accept="image/*">
+                <div class="photo-preview">
+                    <img id="photo-display" src="#" alt="你的照片" style="display: none;">
+                </div>
+            </div>
+
+            <!-- 出生年月日 -->
             <div class="section">
                 <label for="dob">出生年月日:</label>
                 <input type="date" id="dob" name="dob" required>
             </div>
 
+            <!-- 手機號碼 -->
             <div class="section">
                 <label for="phone">手機號碼:</label>
                 <input type="tel" id="phone" name="phone" required pattern="09\d{8}" placeholder="09XXXXXXXX">
-            <div class="error" id="phoneError"></div>
-
-            <div class="section">
-                <label for="gender">性別:</label>
-            <div>
-                <input type="radio" id="male" name="gender" value="male">
-                <label for="male" style="display: inline;">男  </label>
-                <input type="radio" id="female" name="gender" value="female">
-                <label for="female" style="display: inline;">女</label>
-            <div class="error" id="genderError"></div>
-
-            <div class="section">
-                <label for="experience">工作年資:</label>
-                <input type="number" id="experience" name="experience" min="0" required>
+                <div class="error" id="phoneError"></div>
             </div>
 
+            <!-- 性別選項 -->
             <div class="section">
-              <label for="location">縣市區域:</label>
-              <div>
-                  <input type="checkbox" id="taipei" name="location" value="taipei">
-                  <label for="taipei" style="display: inline;">台北</label>
+                <label for="gender">性別:</label>
+                <input type="radio" id="male" name="gender" value="male">
+                <label for="male" style="display: inline;">男</label>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female" style="display: inline;">女</label>
+                <div class="error" id="genderError"></div>
+            </div>
 
-                  <input type="checkbox" id="kaohsiung" name="location" value="kaohsiung">
-                  <label for="kaohsiung" style="display: inline;">高雄</label>
+            <!-- 工作年資 -->
+            <div class="section">
+                <label for="experience">工作年資:</label>
+                <div class="section">
+                    <select id="experience" name="experience" required>
+                        <option value="" disabled selected>請選擇年資</option>
+                        <option value="0-3">0~3 年</option>
+                        <option value="3-6">3~6 年</option>
+                        <option value="6-9">6~9 年</option>
+                        <option value="9-12">9~12 年</option>
+                        <option value="12-15">12~15 年</option>
+                        <option value="15+">15 年以上</option>
+                    </select>
+                </div>
+            </div>
 
-                  <input type="checkbox" id="new-taipei" name="location" value="new-taipei">
-                  <label for="new-taipei" style="display: inline;">新北</label>
+            <!-- 縣市區域 -->
+            <div class="section">
+                <label for="location">縣市區域:</label>
+                <div>
+                    <input type="checkbox" id="taipei" name="location" value="taipei">
+                    <label for="taipei" style="display: inline;">台北市</label>
 
-                  <input type="checkbox" id="taichung" name="location" value="taichung">
-                  <label for="taichung" style="display: inline;">台中</label>
+                    <input type="checkbox" id="new-taipei" name="location" value="new-taipei">
+                    <label for="new-taipei" style="display: inline;">新北市</label>
 
-                  <input type="checkbox" id="tainan" name="location" value="tainan">
-                  <label for="tainan" style="display: inline;">台南</label>
+                    <input type="checkbox" id="taoyuan" name="location" value="taoyuan">
+                    <label for="taoyuan" style="display: inline;">桃園市</label>
 
-                  <input type="checkbox" id="taoyuan" name="location" value="taoyuan">
-                  <label for="taoyuan" style="display: inline;">桃園</label>
+                    <input type="checkbox" id="keelung" name="location" value="keelung">
+                    <label for="keelung" style="display: inline;">基隆市</label>
 
-                  <input type="checkbox" id="keelung" name="location" value="keelung">
-                  <label for="keelung" style="display: inline;">基隆</label>
+                    <input type="checkbox" id="taichung" name="location" value="taichung">
+                    <label for="taichung" style="display: inline;">台中市</label>
 
-                  <input type="checkbox" id="hsinchu-city" name="location" value="hsinchu-city">
-                  <label for="hsinchu-city" style="display: inline;">新竹市</label>
+                    <input type="checkbox" id="kaohsiung" name="location" value="kaohsiung">
+                    <label for="kaohsiung" style="display: inline;">高雄</label>
+  
+                    <input type="checkbox" id="tainan" name="location" value="tainan">
+                    <label for="tainan" style="display: inline;">台南市</label>
+  
+                    <input type="checkbox" id="hsinchu-city" name="location" value="hsinchu-city">
+                    <label for="hsinchu-city" style="display: inline;">新竹市</label>
+  
+                    <input type="checkbox" id="hsinchu-county" name="location" value="hsinchu-county">
+                    <label for="hsinchu-county" style="display: inline;">新竹縣</label>
+  
+                    <input type="checkbox" id="miaoli" name="location" value="miaoli">
+                    <label for="miaoli" style="display: inline;">苗栗縣</label>
+  
+                    <input type="checkbox" id="changhua" name="location" value="changhua">
+                    <label for="changhua" style="display: inline;">彰化縣</label>
+  
+                    <input type="checkbox" id="nantou" name="location" value="nantou">
+                    <label for="nantou" style="display: inline;">南投縣</label>
+  
+                    <input type="checkbox" id="yunlin" name="location" value="yunlin">
+                    <label for="yunlin" style="display: inline;">雲林縣</label>
+  
+                    <input type="checkbox" id="chiayi-city" name="location" value="chiayi-city">
+                    <label for="chiayi-city" style="display: inline;">嘉義市</label>
+  
+                    <input type="checkbox" id="chiayi-county" name="location" value="chiayi-county">
+                    <label for="chiayi-county" style="display: inline;">嘉義縣</label>
+  
+                    <input type="checkbox" id="pingtung" name="location" value="pingtung">
+                    <label for="pingtung" style="display: inline;">屏東縣</label>
+  
+                    <input type="checkbox" id="yilan" name="location" value="yilan">
+                    <label for="yilan" style="display: inline;">宜蘭縣</label>
+  
+                    <input type="checkbox" id="hualien" name="location" value="hualien">
+                    <label for="hualien" style="display: inline;">花蓮縣</label>
+  
+                    <input type="checkbox" id="taitung" name="location" value="taitung">
+                    <label for="taitung" style="display: inline;">台東縣</label>
+  
+                    <input type="checkbox" id="penghu" name="location" value="penghu">
+                    <label for="penghu" style="display: inline;">澎湖縣</label>
+  
+                    <input type="checkbox" id="kinmen" name="location" value="kinmen">
+                    <label for="kinmen" style="display: inline;">金門縣</label>
+  
+                    <input type="checkbox" id="lienchiang" name="location" value="lienchiang">
+                    <label for="lienchiang" style="display: inline;">連江縣</label>
+                </div>
+            </div>
 
-                  <input type="checkbox" id="hsinchu-county" name="location" value="hsinchu-county">
-                  <label for="hsinchu-county" style="display: inline;">新竹縣</label>
+            <!-- 證照 -->
+            <div class="section">
+                <label for="certifications">擁有的證照:</label>
+                <div>
+                    <input type="checkbox" id="caregiver-cert" name="certifications" value="caregiver-cert">
+                    <label for="caregiver-cert" style="display: inline;">照顧服務員</label>
+  
+                    <input type="checkbox" id="tech-cert" name="certifications" value="tech-cert">
+                    <label for="tech-cert" style="display: inline;">單一級技術士</label>
+  
+                    <input type="checkbox" id="dementia-course" name="certifications" value="dementia-course">
+                    <label for="dementia-course" style="display: inline;">失智症照顧課程</label>
+                </div>
+            </div>
 
-                  <input type="checkbox" id="miaoli" name="location" value="miaoli">
-                  <label for="miaoli" style="display: inline;">苗栗</label>
-
-                  <input type="checkbox" id="changhua" name="location" value="changhua">
-                  <label for="changhua" style="display: inline;">彰化</label>
-
-                  <input type="checkbox" id="nantou" name="location" value="nantou">
-                  <label for="nantou" style="display: inline;">南投</label>
-
-                  <input type="checkbox" id="yunlin" name="location" value="yunlin">
-                  <label for="yunlin" style="display: inline;">雲林</label>
-
-                  <input type="checkbox" id="chiayi-city" name="location" value="chiayi-city">
-                  <label for="chiayi-city" style="display: inline;">嘉義市</label>
-
-                  <input type="checkbox" id="chiayi-county" name="location" value="chiayi-county">
-                  <label for="chiayi-county" style="display: inline;">嘉義縣</label>
-
-                  <input type="checkbox" id="pingtung" name="location" value="pingtung">
-                  <label for="pingtung" style="display: inline;">屏東</label>
-
-                  <input type="checkbox" id="yilan" name="location" value="yilan">
-                  <label for="yilan" style="display: inline;">宜蘭</label>
-
-                  <input type="checkbox" id="hualien" name="location" value="hualien">
-                  <label for="hualien" style="display: inline;">花蓮</label>
-
-                  <input type="checkbox" id="taitung" name="location" value="taitung">
-                  <label for="taitung" style="display: inline;">台東</label>
-
-                  <input type="checkbox" id="penghu" name="location" value="penghu">
-                  <label for="penghu" style="display: inline;">澎湖</label>
-
-                  <input type="checkbox" id="kinmen" name="location" value="kinmen">
-                  <label for="kinmen" style="display: inline;">金門</label>
-
-                  <input type="checkbox" id="lienchiang" name="location" value="lienchiang">
-                  <label for="lienchiang" style="display: inline;">連江</label>
-              </div>
-          </div>
-
-          <div class="section">
-              <label for="certifications">擁有的證照:</label>
-              <div>
-                  <input type="checkbox" id="caregiver-cert" name="certifications" value="caregiver-cert">
-                  <label for="caregiver-cert" style="display: inline;">照顧服務員</label>
-
-                  <input type="checkbox" id="tech-cert" name="certifications" value="tech-cert">
-                  <label for="tech-cert" style="display: inline;">單一級技術士</label>
-
-                  <input type="checkbox" id="dementia-course" name="certifications" value="dementia-course">
-                  <label for="dementia-course" style="display: inline;">失智症照顧課程</label>
-              </div>
-          </div>
-
-
-          <div class="section">
-              <label for="languages">擅長語言:</label>
-              <div>
-                  <input type="checkbox" id="chinese" name="languages" value="chinese">
-                  <label for="chinese" style="display: inline;">中文</label>
-
-                  <input type="checkbox" id="english" name="languages" value="english">
-                  <label for="english" style="display: inline;">英文</label>
-
-                  <input type="checkbox" id="taiwanese" name="languages" value="taiwanese">
-                  <label for="taiwanese" style="display: inline;">台語</label>
-
-                  <input type="checkbox" id="japanese" name="languages" value="japanese">
-                  <label for="japanese" style="display: inline;">日文</label>
-              </div>
-          </div>
-          <form action="/submit" method="POST" enctype="multipart/form-data">
-            <!-- 其他欄位 -->
+            <!-- 語言能力 -->
+            <div class="section">
+                <label for="languages">擅長語言:</label>
+                <div>
+                    <input type="checkbox" id="chinese" name="languages" value="chinese">
+                    <label for="chinese" style="display: inline;">中文</label>
+  
+                    <input type="checkbox" id="english" name="languages" value="english">
+                    <label for="english" style="display: inline;">英文</label>
+  
+                    <input type="checkbox" id="taiwanese" name="languages" value="taiwanese">
+                    <label for="taiwanese" style="display: inline;">台語</label>
+  
+                    <input type="checkbox" id="japanese" name="languages" value="japanese">
+                    <label for="japanese" style="display: inline;">日文</label>
+                </div>
+            </div>
+            <!-- 提交按鈕 -->
             <button type="submit">提交</button>
-        </form>
         </form>
     </div>
 
@@ -280,35 +285,3 @@
     </script>
 </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>會員頁面</title>
-</head>
-<body>
-    <h3><%= name %>的會員資料</h3>
-    <% for(let i=0; i<data.length; i++){ %>
-        <div><%= data[i].name %></div>
-        <div><%= data[i].email %></div>
-    <% } %>
-    <div>
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-            <label for="profilePic">上傳照片:</label>
-            <input type="file" id="profilePic" name="profilePic" accept="image/*" required>
-            <button type="submit">上傳</button>
-        </form>
-        <!-- 顯示上傳的照片 -->
-        <!-- <% if (profilePic) { %>
-            <img src="<%= profilePic %>" alt="會員照片" width="300" height="300">
-        <% } else { %>
-            <p>您還沒有上傳照片</p>
-        <% } %>
-    </div>
-    <div>
-        <a href="/signout">登出會員</a>
-    </div>
-</body>
-</html> -->

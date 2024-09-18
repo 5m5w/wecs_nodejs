@@ -54,7 +54,7 @@ app.listen(3000, function(){
 
 // 註冊頁面路由
 app.get('/register', (req, res) => {
-    res.send('<h2>這是註冊頁面</h2>');
+    res.render("register");
 });
 
 // 登入頁面路由
