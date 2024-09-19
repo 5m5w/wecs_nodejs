@@ -54,18 +54,43 @@ app.listen(3000, function(){
 
 // 註冊頁面路由
 app.get('/signup', async function (req, res) {
-    const name=req.body.name;
-    const email=req.body.email;
-    const password=req.body.password;
-    // 尚缺圖片程式碼
-    const dob=req.body.dob;
-    const gender=req.body.gender;
-    const yoe=req.body.yoe;
-    const location=req.body.location;
-    const certi=req.body.certi;
-    const languages=req.body.languages;
     res.render("signup.ejs");
 });
+
+app.post("/submit", upload.single('profilePic'),async(req, res)=>{
+    try {
+        const { name, email, password, dob, phone, gender, experience, location, certifications, languages } = req.body;
+        // 假設你會在實際應用中處理上傳的圖片，這裡簡化為空字串
+        const photo = '';
+
+        const user = {
+            name,
+            email,
+            password,
+            dob,
+            phone,
+            gender,
+            experience,
+            location: Array.isArray(location) ? location : [location], // 處理多選值
+            certifications: Array.isArray(certifications) ? certifications : [certifications],
+            languages: Array.isArray(languages) ? languages : [languages],
+            photo
+        };
+
+        // 儲存使用者資料到 MongoDB
+        const collection = db.collection('member');
+        await collection.insertOne(user);
+
+        // 設定 session 資料（假設這樣做）
+        req.session.member = { name, profilePic: photo };
+
+        // 重定向到 /memberdata
+        res.redirect('/memberdata');
+    } catch (error) {
+        console.error('Error saving user data:', error);
+        res.status(500).send('伺服器錯誤');
+    }
+})
 
 // 照片上傳設定存儲位置和檔名
 const storage = multer.diskStorage({
