@@ -101,7 +101,7 @@
     <div class="container">
         <h1>會員註冊</h1>
 
-        <form action="/submit" method="POST" enctype="multipart/form-data">
+        <form id="signupForm" action="/submit" method="POST" enctype="multipart/form-data">
             <!-- 姓名 -->
             <div class="section">
                 <label for="name">姓名:</label>
@@ -125,7 +125,6 @@
             </div>
 
             <!-- 照片上傳 -->
-            <form action="/upload" method="POST" enctype="multipart/form-data">
                 <div class="section">
                     <label for="photo">上傳照片:</label>
                     <input type="file" id="photo" name="profilePic" accept="image/*" required>
@@ -133,7 +132,6 @@
                         <img id="photo-display" src="#" alt="你的照片" style="display: none;">
                     </div>
                 </div>
-            </form>
 
             <!-- 出生年月日 -->
             <div class="section">
