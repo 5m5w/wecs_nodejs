@@ -127,13 +127,15 @@
             </div>
 
             <!-- 照片上傳 -->
-            <div class="section">
-                <label for="photo">上傳照片:</label>
-                <input type="file" id="photo" name="photo" accept="image/*">
-                <div class="photo-preview">
-                    <img id="photo-display" src="#" alt="你的照片" style="display: none;">
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <div class="section">
+                    <label for="photo">上傳照片:</label>
+                    <input type="file" id="photo" name="profilePic" accept="image/*" required>
+                    <div class="photo-preview">
+                        <img id="photo-display" src="#" alt="你的照片" style="display: none;">
+                    </div>
                 </div>
-            </div>
+            </form>
 
             <!-- 出生年月日 -->
             <div class="section">
@@ -310,6 +312,20 @@
                 passwordError.style.display = 'none'; // 隱藏錯誤訊息
             }
         });
+
+        document.getElementById('photo').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoDisplay = document.getElementById('photo-display');
+                    photoDisplay.style.display = 'block';
+                    photoDisplay.src = e.target.result;  // 顯示上傳的照片
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
     </script>
 
 </body>

@@ -137,6 +137,7 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 1024 * 1024 * 5 } // 最大5MB
 });
+
 // 在你的路由中使用 multer 來處理照片上傳
 app.post("/upload", upload.single('profilePic'), async (req, res) => {
     if (!req.session.member) {

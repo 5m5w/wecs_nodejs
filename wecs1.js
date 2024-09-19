@@ -56,6 +56,7 @@ app.listen(3000, function(){
 app.get('/signup', async function (req, res) {
     const name=req.body.name;
     const email=req.body.email;
+    const password=req.body.password;
     // 尚缺圖片程式碼
     const dob=req.body.dob;
     const gender=req.body.gender;
@@ -64,6 +65,47 @@ app.get('/signup', async function (req, res) {
     const certi=req.body.certi;
     const languages=req.body.languages;
     res.render("signup.ejs");
+});
+
+// 照片上傳設定存儲位置和檔名
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'picuploads/'); // 照片將存儲到 uploads 資料夾中
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname)); // 照片名稱將為唯一時間戳+副檔名
+    }
+});
+// 設定上傳的限制，例如最大檔案大小
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 5 } // 最大5MB
+});
+
+// 在你的路由中使用 multer 來處理照片上傳
+app.post("/upload", upload.single('profilePic'), async (req, res) => {
+    if (!req.session.member) {
+        res.redirect("/error?msg=未登入");
+        return;
+    }
+    try {
+        // 檔案上傳成功，儲存檔案路徑到資料庫
+        const filePath = '/picuploads/' + req.file.filename;
+
+        // 更新會員資料，將照片路徑儲存到資料庫
+        const collection = db.collection("member");
+        await collection.updateOne(
+            { email: req.session.member.email }, // 使用 email 作為識別
+            { $set: { profilePic: filePath } } // 更新 profilePic 欄位
+        );
+        // 更新 session 中的會員資料
+        req.session.member.profilePic = filePath;
+        res.redirect("/member");
+    } catch (err) {
+        console.log("照片上傳錯誤", err);
+        res.redirect("/error?msg=照片上傳失敗");
+    }
 });
 
 // 登入頁面路由
