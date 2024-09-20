@@ -32,7 +32,7 @@ const app = express(); //建立express的app物件
 app.set("view engine", 'ejs'); // 設定樣板引擎
 app.set("views", "./views"); // 設定樣板引擎資料夾
 app.use(express.static("public")); // 設定靜態檔案資料夾
-app.use('/picuploads', express.static('picuploads')); //將 uploads/ 資料夾設定為靜態資源
+app.use('/picuploads', express.static('picuploads')); //將 picuploads 資料夾設定為靜態（本地主機）
 app.use(express.urlencoded({extended:true})); //設定post接收方法
 const multer = require("multer"); // 檔案上傳處理套件
 const path = require("path"); // 檔案上傳的設定路徑
@@ -50,16 +50,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
-
-// 使用 Multer 和 Cloudinary
-// const storage = new CloudinaryStorage({
-//     cloudinary: cloudinary,
-//     params: {
-//         folder: 'user_profile_pics',
-//         allowed_formats: ['jpg', 'png'],
-//         public_id: (req, file) => Date.now().toString() + '-' + file.originalname
-//     }
-// });
 
 // 使用 Multer 處理本地上傳
 const storage = multer.diskStorage({
@@ -137,41 +127,6 @@ app.post("/submit", upload.single('profilePic'), async (req, res) => {
         res.status(500).send('伺服器錯誤');
     }
 });
-// app.post("/submit", upload.single('profilePic'),async(req, res)=>{
-//     try {
-//         const { name, email, password, dob, phone, gender, experience, location, certifications, languages } = req.body;
-//         // 假設你會在實際應用中處理上傳的圖片，這裡簡化為空字串
-//         const photoUrl = req.file.path; // Cloudinary 上傳後的照片 URL
-
-//         const user = {
-//             name,
-//             email,
-//             password,
-//             dob,
-//             phone,
-//             gender,
-//             experience,
-//             location: Array.isArray(location) ? location : [location], // 處理多選值
-//             certifications: Array.isArray(certifications) ? certifications : [certifications],
-//             languages: Array.isArray(languages) ? languages : [languages],
-//             profilePic: photoUrl // 將 Cloudinary 的圖片 URL 存儲在資料庫中
-//         };
-
-//         // 儲存使用者資料到 MongoDB
-//         const collection = db.collection('member');
-//         await collection.insertOne(user);
-
-//         // 設定 session 資料（假設這樣做）
-//         req.session.member = { name, profilePic: photo };
-
-//         // 重定向到 /memberdata
-//         // res.render('/memberdata');
-//         res.send("提交成功！");
-//     } catch (error) {
-//         console.error('Error saving user data:', error);
-//         res.status(500).send('伺服器錯誤');
-//     }
-// });
 
 // 在你的路由中使用 multer 來處理照片上傳
 app.post("/upload", upload.single('profilePic'), async (req, res) => {

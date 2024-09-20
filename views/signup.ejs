@@ -101,7 +101,8 @@
     <div class="container">
         <h1>會員註冊</h1>
 
-        <form id="signupForm" action="/submit" method="POST" enctype="multipart/form-data">
+        
+        <form id="updateForm" action="/user/:id/update" method="POST" enctype="multipart/form-data">
             <!-- 姓名 -->
             <div class="section">
                 <label for="name">姓名:</label>
@@ -125,13 +126,14 @@
             </div>
 
             <!-- 照片上傳 -->
-                <div class="section">
-                    <label for="photo">上傳照片:</label>
-                    <input type="file" id="photo" name="profilePic" accept="image/*" required>
-                    <div class="photo-preview">
-                        <img id="photo-display" src="#" alt="你的照片" style="display: none;">
-                    </div>
+            <div class="section">
+                <label for="photo">上傳照片:</label>
+                <input type="file" id="photo" name="profilePic" accept="image/*">
+                <div class="photo-preview">
+                    <img id="photo-display" src="#" alt="你的照片" style="display: none;">
+                    <input type="hidden" name="existingProfilePic" id="existingProfilePic">
                 </div>
+            </div>
 
             <!-- 出生年月日 -->
             <div class="section">
@@ -282,6 +284,7 @@
     </div>
 
     <script>
+        // 當使用者選擇了一張新圖片時，將其即時顯示在頁面上，作為預覽。它只會在使用者通過文件輸入框選擇新圖片時觸發，與表單加載無關。
         document.getElementById('photo').addEventListener('change', function() {
             const photo = this.files[0];
             if (photo) {
@@ -321,6 +324,27 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        // 頁面加載完成後，從伺服器獲取之前上傳過圖片，這段程式碼會將該圖片顯示出來。
+        document.addEventListener('DOMContentLoaded', async function() {
+            const userId = '使用者的ID';  // 使用者的ID
+            const response = await fetch(`/user/${userId}`);
+            const user = await response.json();
+
+            // 當頁面加載完成後，從伺服器獲取之前輸入的資料，並填充表單數據
+            document.getElementById('name').value = user.name;
+            document.getElementById('email').value = user.email;
+            document.getElementById('dob').value = new Date(user.dob).toISOString().substr(0, 10);
+            document.getElementById('phone').value = user.phone;
+            document.getElementById('existingProfilePic').value = user.profilePic;
+
+            // 顯示圖片
+            const photoDisplay = document.getElementById('photo-display');
+            if (user.profilePic) {
+                photoDisplay.src = `/uploads/${user.profilePic}`;
+                photoDisplay.style.display = 'block';
+            }
+         });
 
     </script>
 
