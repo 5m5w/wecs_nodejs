@@ -1,31 +1,10 @@
-const mongo=require("mongodb");
+const mongo = require("mongodb");
 require('dotenv').config(); // 引用 .env 檔案中的資料
 const uri = process.env.MONGODB_URI; // 從環境變數中讀取 MONGODB_URI
-const client=new mongo.MongoClient(uri);
-const session=require("express-session");
-let db=null;
-let collection=null;
-
-async function initDB() {
-    try {
-        await client.connect();
-        console.log("資料庫連線成功");
-
-        db=client.db("test1");
-        collection=db.collection("member");
-
-        // await collection.insertOne({
-        //     name: "123",
-        //     email:"123@123.com",
-        //     password: "123"
-        // });
-       
-    }catch(err){
-        console.log("資料庫連線失敗", err);
-    }finally{
-    }
-}
-initDB();
+const client = new mongo.MongoClient(uri);
+const session = require("express-session");
+let db = null;
+let collection = null;
 
 const express = require("express"); // 載入express 第三方模組
 const app = express(); //建立express的app物件
@@ -33,29 +12,41 @@ app.set("view engine", 'ejs'); // 設定樣板引擎
 app.set("views", "./views"); // 設定樣板引擎資料夾
 app.use(express.static("public")); // 設定靜態檔案資料夾
 app.use('/picuploads', express.static('picuploads')); //將 picuploads 資料夾設定為靜態（本地主機）
-app.use(express.urlencoded({extended:true})); //設定post接收方法
+app.use(express.urlencoded({ extended: true })); //設定post接收方法
 const multer = require("multer"); // 檔案上傳處理套件
 const path = require("path"); // 檔案上傳的設定路徑
 const cloudinary = require('cloudinary').v2; //雲端圖片伺服器
+const bcrypt = require('bcrypt'); // 註冊密碼加密
+const saltRounds = 10; // 定義加密強度，通常設為 10
 
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-mongoose.connect('mongodb://localhost:27017/userDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
-// 定義使用者Schema
-const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
-});
-// 使用者Model
-const User = mongoose.model('User', userSchema);
-// 中介軟體
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
+// mongodb資料庫連線
+async function initDB() {
+    try {
+        await client.connect();
+        console.log("資料庫連線成功");
+
+        db = client.db("test1");
+        collection = db.collection("member");
+
+        // await collection.insertOne({
+        //     name: "123",
+        //     email:"123@123.com",
+        //     password: "123"
+        // });
+
+    } catch (err) {
+        console.log("資料庫連線失敗", err);
+    } finally {
+    }
+}
+initDB();
+
 
 app.use(session({
-    secret:"wecs",
-    resave:false,
-    saveUninitialized:true
+    secret: "wecs",
+    resave: false,
+    saveUninitialized: true
 }));
 
 // 設置 Cloudinary 配置
@@ -84,12 +75,12 @@ const upload = multer({
 });
 
 // 啟動伺服器 http://localhost:3000/
-app.listen(3000, function(){
+app.listen(3000, function () {
     console.log("server started!");
 });
 
 // 建立首頁路由
-app.get("/", function(req, res){
+app.get("/", function (req, res) {
     res.render("mainpage1_wecs.ejs");
 });
 
@@ -99,46 +90,69 @@ app.get('/signup', async function (req, res) {
 });
 
 // 上傳註冊的資料
-app.post("/submit", upload.single('profilePic'), async (req, res) => {
+app.post("/signup", upload.single('profilePic'), async (req, res) => {
     try {
-        // 1. 上傳圖片到 Cloudinary
-        cloudinary.uploader.upload(req.file.path, { folder: 'user_profile_pics' }, async (error, result) => {
-            if (error) {
-                return res.status(500).send('上傳到 Cloudinary 出錯');
-            }
+        // Check if file exists
+        if (!req.file) {
+            console.log("No file uploaded.");
+            return res.status(400).send('必須上傳圖片');
+        }
 
-            const photoUrl = result.secure_url; // Cloudinary 上傳後的圖片 URL
+        console.log("File uploaded successfully:", req.file.path);
 
-            // 2. 處理表單中的其他資料
-            const { name, email, password, dob, phone, gender, experience, location, certifications, languages } = req.body;
+        // Uploading to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, { folder: 'user_profile_pics' });
+        console.log("Image uploaded to Cloudinary:", result.secure_url);
 
-            // 3. 構建使用者資料對象
-            const user = {
-                name,
-                email,
-                password,
-                dob,
-                phone,
-                gender,
-                experience,
-                location: Array.isArray(location) ? location : [location], // 處理多選值
-                certifications: Array.isArray(certifications) ? certifications : [certifications],
-                languages: Array.isArray(languages) ? languages : [languages],
-                profilePic: photoUrl // 將 Cloudinary 的圖片 URL 存儲在資料庫中
-            };
+        const photoUrl = result.secure_url; //取得上傳圖片的url
 
-            // 4. 儲存使用者資料到 MongoDB
-            const collection = db.collection('member');
-            await collection.insertOne(user);
+        // Processing other form data
+        const { name, email, password, dob, phone, gender, experience, location, certifications, languages } = req.body;
+        
+        if (!name || !email || !password) {
+            console.log("Missing required fields.");
+            return res.status(400).send('請填寫所有必填欄位');
+        }
 
-            // 5. 設定 session 資料
-            req.session.member = { name, profilePic: photoUrl };
+        // Check if email already exists
+        const collection = db.collection('member');
+        const existingUser = await collection.findOne({ email });
+        if (existingUser) {
+            console.log("Email already registered.");
+            return res.status(400).send('該 Email 已經註冊');
+        }
 
-            // 6. 回應成功訊息
-            res.send("提交成功！");
-        });
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        console.log("Password hashed successfully.");
+
+        // Create user object
+        const user = {
+            name,
+            email,
+            password: hashedPassword,
+            dob,
+            phone,
+            gender,
+            experience,
+            location: Array.isArray(location) ? location : [location],
+            certifications: Array.isArray(certifications) ? certifications : [certifications],
+            languages: Array.isArray(languages) ? languages : [languages],
+            profilePic: photoUrl
+        };
+
+        // Insert user data into MongoDB
+        await collection.insertOne(user);
+        console.log("User data inserted into MongoDB.");
+
+        // Set session data
+        req.session.member = { name, profilePic: photoUrl };
+        console.log("Session updated successfully.");
+
+        // Send success response
+        res.send("提交成功！");
     } catch (error) {
-        console.error('Error saving user data:', error);
+        console.error('Error occurred:', error);
         res.status(500).send('伺服器錯誤');
     }
 });
@@ -169,28 +183,35 @@ app.post("/upload", upload.single('profilePic'), async (req, res) => {
 });
 
 // 驗證使用者登入
-app.post('/login', async (req, res) => {
+app.post('/signin', async (req, res) => {
     const { email, password } = req.body;
 
     try {
         // 根據信箱查找使用者
-        const user = await User.findOne({ email });
+        const collection = db.collection("member");
+        let result = await collection.findOne({
+            $and: [
+                { email: email },
+                { password: password }
+            ]
+        });
 
-        if (!user) {
+        if (result === null) {
             // 如果使用者不存在，返回錯誤訊息
             return res.status(400).send('使用者未註冊');
         }
 
         // 驗證密碼
-        const isMatch = await bcrypt.compare(password, user.password);
+        // const isMatch = await bcrypt.compare(password, user.password);
+        // if (!isMatch) {
+        //     // 如果密碼不正確，返回錯誤訊息
+        //     return res.status(400).send('密碼錯誤');
+        // }
 
-        if (!isMatch) {
-            // 如果密碼不正確，返回錯誤訊息
-            return res.status(400).send('密碼錯誤');
-        }
-
-        // 驗證成功，跳轉到 /success 頁面
+        // 登入成功，紀錄會員資訊在session中
+        req.session.member = result;
         res.redirect('/success');
+
     } catch (err) {
         console.error(err);
         res.status(500).send('伺服器錯誤');

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,12 +98,13 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>會員註冊</h1>
 
-        
-        <form id="updateForm" action="/user/:id/update" method="POST" enctype="multipart/form-data">
+
+        <form id="updateForm" action="/signup" method="POST" enctype="multipart/form-data">
             <!-- 姓名 -->
             <div class="section">
                 <label for="name">姓名:</label>
@@ -116,12 +118,13 @@
             </div>
 
             <!-- 密碼-->
-                <label for="password">密碼:</label>
-                <input type="password" id="password" name="password" required minlength="8" placeholder="輸入密碼">
+            <label for="password">密碼:</label>
+            <input type="password" id="password" name="password" required minlength="8" placeholder="輸入密碼">
             <!-- 確認密碼 -->
             <div class="section">
                 <label for="confirmPassword">確認密碼:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8" placeholder="再次輸入密碼">
+                <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8"
+                    placeholder="再次輸入密碼">
                 <div id="passwordError" class="error" style="display:none;">密碼不一致，請再試一次。</div>
             </div>
 
@@ -195,52 +198,52 @@
 
                     <input type="checkbox" id="kaohsiung" name="location" value="kaohsiung">
                     <label for="kaohsiung" style="display: inline;">高雄</label>
-  
+
                     <input type="checkbox" id="tainan" name="location" value="tainan">
                     <label for="tainan" style="display: inline;">台南市</label>
-  
+
                     <input type="checkbox" id="hsinchu-city" name="location" value="hsinchu-city">
                     <label for="hsinchu-city" style="display: inline;">新竹市</label>
-  
+
                     <input type="checkbox" id="hsinchu-county" name="location" value="hsinchu-county">
                     <label for="hsinchu-county" style="display: inline;">新竹縣</label>
-  
+
                     <input type="checkbox" id="miaoli" name="location" value="miaoli">
                     <label for="miaoli" style="display: inline;">苗栗縣</label>
-  
+
                     <input type="checkbox" id="changhua" name="location" value="changhua">
                     <label for="changhua" style="display: inline;">彰化縣</label>
-  
+
                     <input type="checkbox" id="nantou" name="location" value="nantou">
                     <label for="nantou" style="display: inline;">南投縣</label>
-  
+
                     <input type="checkbox" id="yunlin" name="location" value="yunlin">
                     <label for="yunlin" style="display: inline;">雲林縣</label>
-  
+
                     <input type="checkbox" id="chiayi-city" name="location" value="chiayi-city">
                     <label for="chiayi-city" style="display: inline;">嘉義市</label>
-  
+
                     <input type="checkbox" id="chiayi-county" name="location" value="chiayi-county">
                     <label for="chiayi-county" style="display: inline;">嘉義縣</label>
-  
+
                     <input type="checkbox" id="pingtung" name="location" value="pingtung">
                     <label for="pingtung" style="display: inline;">屏東縣</label>
-  
+
                     <input type="checkbox" id="yilan" name="location" value="yilan">
                     <label for="yilan" style="display: inline;">宜蘭縣</label>
-  
+
                     <input type="checkbox" id="hualien" name="location" value="hualien">
                     <label for="hualien" style="display: inline;">花蓮縣</label>
-  
+
                     <input type="checkbox" id="taitung" name="location" value="taitung">
                     <label for="taitung" style="display: inline;">台東縣</label>
-  
+
                     <input type="checkbox" id="penghu" name="location" value="penghu">
                     <label for="penghu" style="display: inline;">澎湖縣</label>
-  
+
                     <input type="checkbox" id="kinmen" name="location" value="kinmen">
                     <label for="kinmen" style="display: inline;">金門縣</label>
-  
+
                     <input type="checkbox" id="lienchiang" name="location" value="lienchiang">
                     <label for="lienchiang" style="display: inline;">連江縣</label>
                 </div>
@@ -252,10 +255,10 @@
                 <div>
                     <input type="checkbox" id="caregiver-cert" name="certifications" value="caregiver-cert">
                     <label for="caregiver-cert" style="display: inline;">照顧服務員</label>
-  
+
                     <input type="checkbox" id="tech-cert" name="certifications" value="tech-cert">
                     <label for="tech-cert" style="display: inline;">單一級技術士</label>
-  
+
                     <input type="checkbox" id="dementia-course" name="certifications" value="dementia-course">
                     <label for="dementia-course" style="display: inline;">失智症照顧課程</label>
                 </div>
@@ -267,13 +270,13 @@
                 <div>
                     <input type="checkbox" id="chinese" name="languages" value="chinese">
                     <label for="chinese" style="display: inline;">中文</label>
-  
+
                     <input type="checkbox" id="english" name="languages" value="english">
                     <label for="english" style="display: inline;">英文</label>
-  
+
                     <input type="checkbox" id="taiwanese" name="languages" value="taiwanese">
                     <label for="taiwanese" style="display: inline;">台語</label>
-  
+
                     <input type="checkbox" id="japanese" name="languages" value="japanese">
                     <label for="japanese" style="display: inline;">日文</label>
                 </div>
@@ -285,24 +288,24 @@
 
     <script>
         // 當使用者選擇了一張新圖片時，將其即時顯示在頁面上，作為預覽。它只會在使用者通過文件輸入框選擇新圖片時觸發，與表單加載無關。
-        document.getElementById('photo').addEventListener('change', function() {
+        document.getElementById('photo').addEventListener('change', function () {
             const photo = this.files[0];
             if (photo) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     document.getElementById('photo-display').style.display = 'block';
                     document.getElementById('photo-display').src = e.target.result;
                 };
                 reader.readAsDataURL(photo);
             }
-        });   
+        });
 
-        const signupForm = document.getElementById('signupForm');
+        const signupForm = document.getElementById('updateForm');
         const password = document.getElementById('password');
         const confirmPassword = document.getElementById('confirmPassword');
         const passwordError = document.getElementById('passwordError');
 
-        signupForm.addEventListener('submit', function(e) {
+        signupForm.addEventListener('submit', function (e) {
             // 檢查兩次密碼是否一致
             if (password.value !== confirmPassword.value) {
                 e.preventDefault(); // 阻止表單提交
@@ -312,11 +315,11 @@
             }
         });
 
-        document.getElementById('photo').addEventListener('change', function() {
+        document.getElementById('photo').addEventListener('change', function () {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const photoDisplay = document.getElementById('photo-display');
                     photoDisplay.style.display = 'block';
                     photoDisplay.src = e.target.result;  // 顯示上傳的照片
@@ -325,28 +328,8 @@
             }
         });
 
-        // 頁面加載完成後，從伺服器獲取之前上傳過圖片，這段程式碼會將該圖片顯示出來。
-        document.addEventListener('DOMContentLoaded', async function() {
-            const userId = '使用者的ID';  // 使用者的ID
-            const response = await fetch(`/user/${userId}`);
-            const user = await response.json();
-
-            // 當頁面加載完成後，從伺服器獲取之前輸入的資料，並填充表單數據
-            document.getElementById('name').value = user.name;
-            document.getElementById('email').value = user.email;
-            document.getElementById('dob').value = new Date(user.dob).toISOString().substr(0, 10);
-            document.getElementById('phone').value = user.phone;
-            document.getElementById('existingProfilePic').value = user.profilePic;
-
-            // 顯示圖片
-            const photoDisplay = document.getElementById('photo-display');
-            if (user.profilePic) {
-                photoDisplay.src = `/uploads/${user.profilePic}`;
-                photoDisplay.style.display = 'block';
-            }
-         });
-
     </script>
 
 </body>
+
 </html>
