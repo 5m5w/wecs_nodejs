@@ -38,6 +38,20 @@ const multer = require("multer"); // 檔案上傳處理套件
 const path = require("path"); // 檔案上傳的設定路徑
 const cloudinary = require('cloudinary').v2; //雲端圖片伺服器
 
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+mongoose.connect('mongodb://localhost:27017/userDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
+// 定義使用者Schema
+const userSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
+// 使用者Model
+const User = mongoose.model('User', userSchema);
+// 中介軟體
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.use(session({
     secret:"wecs",
     resave:false,
@@ -84,6 +98,7 @@ app.get('/signup', async function (req, res) {
     res.render("signup.ejs");
 });
 
+// 上傳註冊的資料
 app.post("/submit", upload.single('profilePic'), async (req, res) => {
     try {
         // 1. 上傳圖片到 Cloudinary
@@ -153,7 +168,35 @@ app.post("/upload", upload.single('profilePic'), async (req, res) => {
     }
 });
 
-// 登入頁面路由
-app.get('/signin', (req, res) => {
-    res.send('<h2>這是登入頁面</h2>');
+// 驗證使用者登入
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // 根據信箱查找使用者
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            // 如果使用者不存在，返回錯誤訊息
+            return res.status(400).send('使用者未註冊');
+        }
+
+        // 驗證密碼
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            // 如果密碼不正確，返回錯誤訊息
+            return res.status(400).send('密碼錯誤');
+        }
+
+        // 驗證成功，跳轉到 /success 頁面
+        res.redirect('/success');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('伺服器錯誤');
+    }
+});
+// 成功登入後跳轉的頁面
+app.get('/success', (req, res) => {
+    res.send('登入成功');
 });
