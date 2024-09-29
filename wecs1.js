@@ -42,7 +42,6 @@ async function initDB() {
 }
 initDB();
 
-
 app.use(session({
     secret: "wecs",
     resave: false,
@@ -92,41 +91,41 @@ app.get('/signup', async function (req, res) {
 // 上傳註冊的資料
 app.post("/signup", upload.single('profilePic'), async (req, res) => {
     try {
-        // Check if file exists
+        // 检查是否有文件上传
         if (!req.file) {
-            console.log("No file uploaded.");
-            return res.status(400).send('必須上傳圖片');
+            console.log("没有上传文件。");
+            return res.status(400).send('必须上传图片');
         }
 
-        console.log("File uploaded successfully:", req.file.path);
+        console.log("文件上传成功:", req.file.path);
 
-        // Uploading to Cloudinary
+        // 上传到 Cloudinary
         const result = await cloudinary.uploader.upload(req.file.path, { folder: 'user_profile_pics' });
-        console.log("Image uploaded to Cloudinary:", result.secure_url);
+        console.log("图片已上传到 Cloudinary:", result.secure_url);
 
-        const photoUrl = result.secure_url; //取得上傳圖片的url
+        const photoUrl = result.secure_url; //获取上传图片的url
 
-        // Processing other form data
+        // 处理其他表单数据
         const { name, email, password, dob, phone, gender, experience, location, certifications, languages } = req.body;
         
         if (!name || !email || !password) {
-            console.log("Missing required fields.");
-            return res.status(400).send('請填寫所有必填欄位');
+            console.log("缺少必填字段。");
+            return res.status(400).send('请填写所有必填栏位');
         }
 
-        // Check if email already exists
+        // 检查邮箱是否已存在
         const collection = db.collection('member');
         const existingUser = await collection.findOne({ email });
         if (existingUser) {
-            console.log("Email already registered.");
-            return res.status(400).send('該 Email 已經註冊');
+            console.log("邮箱已注册。");
+            return res.status(400).send('该 Email 已经注册');
         }
 
-        // Hash password
+        // 密码加密
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        console.log("Password hashed successfully.");
+        console.log("密码加密成功。");
 
-        // Create user object
+        // 创建用户对象
         const user = {
             name,
             email,
@@ -141,19 +140,40 @@ app.post("/signup", upload.single('profilePic'), async (req, res) => {
             profilePic: photoUrl
         };
 
-        // Insert user data into MongoDB
+        // 将用户数据插入 MongoDB
         await collection.insertOne(user);
-        console.log("User data inserted into MongoDB.");
+        console.log("用户数据已插入 MongoDB。");
 
-        // Set session data
-        req.session.member = { name, profilePic: photoUrl };
-        console.log("Session updated successfully.");
+        // 设置 session 数据
+        req.session.member = { name, email, profilePic: photoUrl };
+        console.log("Session 更新成功。");
 
-        // Send success response
-        res.send("提交成功！");
+        // 重定向到 memberdata.ejs 页面
+        res.redirect('/memberdata');
     } catch (error) {
-        console.error('Error occurred:', error);
-        res.status(500).send('伺服器錯誤');
+        console.error('发生错误:', error);
+        res.status(500).send('服务器错误');
+    }
+});
+
+// 添加 memberdata 路由
+app.get('/memberdata', async (req, res) => {
+    if (!req.session.member) {
+        return res.redirect('/signin'); // 如果用户未登录，重定向到登录页面
+    }
+    
+    try {
+        const collection = db.collection('member');
+        const memberData = await collection.findOne({ email: req.session.member.email });
+        
+        if (!memberData) {
+            return res.status(404).send('找不到会员数据');
+        }
+        
+        res.render('memberdata.ejs', { member: memberData });
+    } catch (error) {
+        console.error('获取会员数据时出错:', error);
+        res.status(500).send('服务器错误');
     }
 });
 
@@ -182,41 +202,41 @@ app.post("/upload", upload.single('profilePic'), async (req, res) => {
     }
 });
 
-// 驗證使用者登入
+// 验证用户登录
 app.post('/signin', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // 根據信箱查找使用者
+        // 根据邮箱查找用户
         const collection = db.collection("member");
-        let result = await collection.findOne({
-            $and: [
-                { email: email },
-                { password: password }
-            ]
-        });
+        let user = await collection.findOne({ email: email });
 
-        if (result === null) {
-            // 如果使用者不存在，返回錯誤訊息
-            return res.status(400).send('使用者未註冊');
+        if (user === null) {
+            // 如果用户不存在，返回错误信息
+            return res.status(400).send('用户未注册');
         }
 
-        // 驗證密碼
-        // const isMatch = await bcrypt.compare(password, user.password);
-        // if (!isMatch) {
-        //     // 如果密碼不正確，返回錯誤訊息
-        //     return res.status(400).send('密碼錯誤');
-        // }
+        // 验证密码
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            // 如果密码不正确，返回错误信息
+            return res.status(400).send('密码错误');
+        }
 
-        // 登入成功，紀錄會員資訊在session中
-        req.session.member = result;
-        res.redirect('/success');
+        // 登录成功，记录会员信息在session中
+        req.session.member = {
+            name: user.name,
+            email: user.email,
+            profilePic: user.profilePic
+        };
+        res.redirect('/memberdata');
 
     } catch (err) {
         console.error(err);
-        res.status(500).send('伺服器錯誤');
+        res.status(500).send('服务器错误');
     }
 });
+
 // 成功登入後跳轉的頁面
 app.get('/success', (req, res) => {
     res.send('登入成功');

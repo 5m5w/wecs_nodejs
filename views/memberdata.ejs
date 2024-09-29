@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>會員資料</title>
+    <title>会员资料</title>
 </head>
 <body>
-    <h1>會員資料</h1>
-    <div>
-        <h2><%= name %></h2>
-        <img src="<%= profilePic %>" alt="會員照片">
-        <p>Email: <%= data.email %></p>
-        <p>出生年月日: <%= data.dob %></p>
-        <p>手機號碼: <%= data.phone %></p>
-        <p>性別: <%= data.gender %></p>
-        <p>工作年資: <%= data.experience %></p>
-        <p>縣市區域: <%= data.location.join(', ') %></p>
-        <p>擁有的證照: <%= data.certifications.join(', ') %></p>
-        <p>擅長語言: <%= data.languages.join(', ') %></p>
-    </div>
+    <p>邮箱：<%= member.email %></p>
+    <img src="<%= member.profilePic %>" alt="头像" style="width: 100px; height: 100px;">
+    <p>Email: <%= member.email %></p>
+    <p>出生年月日: <%= member.dob || '未提供' %></p>
+    <p>手機號碼: <%= member.phone || '未提供' %></p>
+    <p>性別: <%= member.gender || '未提供' %></p>
+    <p>工作年資: <%= member.experience || '未提供' %></p>
+    <p>縣市區域: <%= Array.isArray(member.location) ? member.location.join(', ') : (member.location || '未提供') %></p>
+    <p>擁有的證照: <%= Array.isArray(member.certifications) ? member.certifications.join(', ') : (member.certifications || '未提供') %></p>
+    <p>擅長語言: <%= Array.isArray(member.languages) ? member.languages.join(', ') : (member.languages || '未提供') %></p>
 </body>
 </html>
